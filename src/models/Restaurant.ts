@@ -63,17 +63,17 @@ const RestaurantSchema: Schema = new Schema(
       min: 0,
       max: 5,
       default: 0,
-      // Functional bug: When calculating average rating, it doesn't round properly
+      
     },
     deliveryTime: {
       type: Number,
       required: true,
-      // Functional bug: Delivery time calculation doesn't account for peak hours
+      
     },
     deliveryFee: {
       type: Number,
       required: true,
-      // Functional bug: Free delivery logic has edge cases that don't work
+      
     },
     minOrderAmount: {
       type: Number,
@@ -89,14 +89,14 @@ const RestaurantSchema: Schema = new Schema(
         popular: { type: Boolean, default: false },
         available: { type: Boolean, default: true },
         allergens: { type: [String] },
-        // Functional bug: When items are marked unavailable, they still appear in search and can be added to cart
+        
       },
     ],
     openingHours: {
       open: { type: String, required: true },
       close: { type: String, required: true },
-      daysOpen: { type: [Number], required: true }, // 0 = Sunday, 6 = Saturday
-      // Functional bug: Restaurant appears as open even when closed for certain hours
+      daysOpen: { type: [Number], required: true }, 
+      
     },
     image: {
       type: String,
@@ -104,7 +104,7 @@ const RestaurantSchema: Schema = new Schema(
     featured: {
       type: Boolean,
       default: false,
-      // Functional bug: Featured restaurants sometimes don't appear at the top
+      
     },
   },
   {

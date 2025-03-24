@@ -14,7 +14,7 @@ const CheckoutPage: NextPage = () => {
   const [calculatedTotal, setCalculatedTotal] = useState(0);
   const [calculatedSubtotal, setCalculatedSubtotal] = useState(0);
 
-  // Bug: Initial card values accept anything
+  
   const [cardDetails, setCardDetails] = useState({
     name: "",
     number: "",
@@ -22,7 +22,7 @@ const CheckoutPage: NextPage = () => {
     cvv: "",
   });
 
-  // Update calculated prices when items change
+  
   useEffect(() => {
     const subtotal = parseFloat(getTotalPrice().toFixed(2));
     const total = parseFloat((subtotal + 5).toFixed(2));
@@ -31,7 +31,7 @@ const CheckoutPage: NextPage = () => {
     setCalculatedTotal(total);
   }, [items, getTotalPrice]);
 
-  // Handle form input changes
+  
   const handleCardInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCardDetails({ ...cardDetails, [name]: value });
@@ -47,31 +47,31 @@ const CheckoutPage: NextPage = () => {
 
     setIsProcessing(true);
 
-    // Simulate payment processing
+    
     setTimeout(() => {
-      // Bug: Always mark payment as successful regardless of input
-      // In a real app, we would validate card details here
+      
+      
 
-      // Generate a fake order number
+      
       const orderNumber = Math.floor(10000000 + Math.random() * 90000000);
 
-      // Store order details in sessionStorage for the confirmation page
+      
       const orderDetails = {
         items,
-        totalPrice: calculatedSubtotal, // Use buggy calculated price
+        totalPrice: calculatedSubtotal, 
         deliveryFee: 5,
-        // Bug: Use buggy total price for order confirmation
+        
         displayPrice: calculatedTotal,
         paymentMethod,
         orderNumber,
-        // Bug: Show incorrect delivery time
+        
         estimatedDelivery: Math.floor(15 + Math.random() * 30) + " minutes",
         orderDate: new Date().toISOString(),
       };
 
       sessionStorage.setItem("orderDetails", JSON.stringify(orderDetails));
 
-      // Clear the cart
+      
       clearCart();
 
       setIsProcessing(false);

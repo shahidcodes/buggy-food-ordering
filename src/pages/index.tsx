@@ -25,7 +25,7 @@ export default function Home() {
           limit: ITEMS_PER_PAGE,
         });
         setLoading(true);
-        // Bug: API call doesn't properly include pagination metadata in response
+
         const response = await axios.get("/api/restaurants", {
           params: {
             ...(cuisine && { cuisine }),
@@ -37,10 +37,8 @@ export default function Home() {
 
         console.log("Frontend: Response received:", response.data);
 
-        // Bug: Doesn't check if response has expected structure
         setRestaurants(response.data.restaurants || []);
 
-        // Calculate total pages using the actual totalCount from the API
         const total =
           response.data.totalCount || response.data.pagination?.totalCount || 0;
         setTotalPages(Math.ceil(total / ITEMS_PER_PAGE));
@@ -64,13 +62,12 @@ export default function Home() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setCurrentPage(1); // Reset to first page on new search
-    // The search is handled by the useEffect dependency
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo(0, 0); // Scroll to top when changing page
+    window.scrollTo(0, 0);
   };
 
   const cuisineOptions = [
@@ -84,47 +81,38 @@ export default function Home() {
     "Thai",
   ];
 
-  // Generate page numbers to display
   const getPageNumbers = () => {
     const pages = [];
     const maxPagesToShow = 5;
 
     if (totalPages <= maxPagesToShow) {
-      // Show all pages if total is less than max
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      // Always show first page
       pages.push(1);
 
-      // Calculate start and end of page range
       let start = Math.max(2, currentPage - 1);
       let end = Math.min(totalPages - 1, currentPage + 1);
 
-      // Adjust range if we're near the beginning or end
       if (currentPage <= 3) {
         end = Math.min(maxPagesToShow - 1, totalPages - 1);
       } else if (currentPage >= totalPages - 2) {
         start = Math.max(2, totalPages - maxPagesToShow + 2);
       }
 
-      // Add ellipsis if needed
       if (start > 2) {
         pages.push("...");
       }
 
-      // Add page numbers in range
       for (let i = start; i <= end; i++) {
         pages.push(i);
       }
 
-      // Add ellipsis if needed
       if (end < totalPages - 1) {
         pages.push("...");
       }
 
-      // Always show last page
       if (totalPages > 1) {
         pages.push(totalPages);
       }
@@ -245,7 +233,6 @@ export default function Home() {
                     {restaurant.cuisine && (
                       <div className="mt-2 flex flex-wrap gap-1">
                         {Array.isArray(restaurant.cuisine) ? (
-                          // Bug: Some cuisine tags might be missing due to rendering issue
                           restaurant.cuisine.slice(0, 3).map((type) => (
                             <span
                               key={type}
@@ -283,7 +270,6 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex justify-center mt-12">
                 <nav

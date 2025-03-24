@@ -20,7 +20,7 @@ interface OrderDetails {
   items: OrderItem[];
   totalPrice: number;
   deliveryFee: number;
-  displayPrice: number; // Bug: This is intentionally different from totalPrice
+  displayPrice: number;
   paymentMethod: "card" | "cash";
   orderNumber: number;
   estimatedDelivery: string;
@@ -33,11 +33,9 @@ const OrderConfirmationPage: NextPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Get order details from sessionStorage
     const storedOrderDetails = sessionStorage.getItem("orderDetails");
 
     if (!storedOrderDetails) {
-      // Redirect to home if no order details
       router.push("/");
       return;
     }
@@ -80,29 +78,24 @@ const OrderConfirmationPage: NextPage = () => {
     );
   }
 
-  // Format the date with bugs (showing wrong day)
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    // Bug: Always show "Today" even if it's not today
+
     return `Today, ${date.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
     })}`;
   };
 
-  // Bug: Calculate wrong total by using the buggy displayPrice
   const calculatedTotal = orderDetails.displayPrice;
 
-  // Bug: Show randomly wrong delivery fee sometimes
   const displayDeliveryFee =
     Math.random() > 0.7
       ? orderDetails.deliveryFee + 2
       : orderDetails.deliveryFee;
 
-  // Bug: Sometimes mix up the items quantities
   const displayItems = orderDetails.items.map((item) => {
     if (Math.random() > 0.8 && item.quantity > 1) {
-      // Return a wrong quantity
       return {
         ...item,
         quantity: item.quantity + (Math.random() > 0.5 ? 1 : -1),

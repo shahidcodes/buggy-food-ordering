@@ -12,21 +12,21 @@ export default async function handler(
     try {
       await connectDB();
 
-      // Find restaurant by ID
+      
       const restaurant = await Restaurant.findById(id);
 
       if (!restaurant) {
         return res.status(404).json({ message: "Restaurant not found" });
       }
 
-      // Add console log to see what's being returned
+      
       console.log("API - Restaurant data:", {
         id: restaurant._id,
         name: restaurant.name,
         openingHours: restaurant.openingHours,
       });
 
-      // Return restaurant data
+      
       return res.status(200).json(restaurant);
     } catch (error) {
       console.error("Error fetching restaurant:", error);

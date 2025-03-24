@@ -39,15 +39,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  // Bug 1: Doesn't properly handle token expiration
+  
   useEffect(() => {
     const checkUser = async () => {
       try {
-        // Try to get the token from localStorage
+        
         const token = localStorage.getItem("auth_token");
 
         if (token) {
-          // Bug 2: Doesn't validate token format before using it
+          
           const response = await axios.get("/api/auth/me", {
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -55,9 +55,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(response.data.user);
         }
       } catch (err) {
-        // Bug 3: Doesn't clear invalid token on 401 errors
+        
         console.error("Error checking authentication status:", err);
-        // Should clear token and state here, but doesn't
+        
       } finally {
         setLoading(false);
       }
@@ -73,13 +73,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await axios.post("/api/auth/login", { email, password });
 
-      // Bug 4: Token is stored insecurely and without expiration check
+      
       localStorage.setItem("auth_token", response.data.token);
 
       setUser(response.data.user);
       router.push("/");
     } catch (error: unknown) {
-      // Bug 5: Generic error messages that don't distinguish between different failure reasons
+      
       setError("Invalid credentials. Please try again.");
       console.error("Login error:", error);
     } finally {
@@ -98,13 +98,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         password,
       });
 
-      // Bug 6: Automatically logs in user without email verification
+      
       localStorage.setItem("auth_token", response.data.token);
 
       setUser(response.data.user);
       router.push("/");
     } catch (error: unknown) {
-      // Bug 7: Doesn't handle duplicate email errors with specific messages
+      
       setError("Registration failed. Please try again.");
       console.error("Registration error:", error);
     } finally {
@@ -113,7 +113,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
-    // Bug 8: Doesn't invalidate the token on the server side
+    
     localStorage.removeItem("auth_token");
     setUser(null);
     router.push("/signin");

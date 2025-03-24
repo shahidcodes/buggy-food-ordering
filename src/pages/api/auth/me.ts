@@ -3,7 +3,7 @@ import connectDB from "@/lib/db";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 
-// Simple middleware to extract user from token
+
 const getAuthUser = async (req: NextApiRequest) => {
   try {
     const authHeader = req.headers.authorization;
@@ -14,8 +14,8 @@ const getAuthUser = async (req: NextApiRequest) => {
 
     const token = authHeader.split(" ")[1];
 
-    // Bug: No signature verification validation
-    // Bug: No token expiration check
+    
+    
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET || "fallback_secret_do_not_use_in_production"
@@ -25,11 +25,11 @@ const getAuthUser = async (req: NextApiRequest) => {
       return null;
     }
 
-    // Bug: No projection to limit fields
+    
     const user = await User.findById(decoded.id);
     return user;
   } catch (error) {
-    // Bug: Silent fail without proper error handling
+    
     console.error("Auth error:", error);
     return null;
   }
@@ -52,7 +52,7 @@ export default async function handler(
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    // Bug: Returns password hash in user object
+    
     return res.status(200).json({
       user: {
         _id: user._id,
@@ -60,7 +60,7 @@ export default async function handler(
         email: user.email,
         addresses: user.addresses,
         phoneNumber: user.phoneNumber,
-        // Bug: Includes sensitive timestamp data
+        
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       },

@@ -4,7 +4,7 @@ import connectDB from "@/lib/db";
 import Restaurant from "@/models/Restaurant";
 import User from "@/models/User";
 
-// For security - only allow seeding in development
+
 const isProduction = process.env.NODE_ENV === "production";
 
 export default async function handler(
@@ -26,17 +26,17 @@ export default async function handler(
 
     const seedCount = parseInt(req.query.count as string) || 20;
 
-    // Clear existing data if requested
+    
     const shouldClear = req.query.clear === "true";
     if (shouldClear) {
       await Restaurant.deleteMany({});
       await User.deleteMany({});
     }
 
-    // Seed restaurants
+    
     const restaurants = await seedRestaurants(seedCount);
 
-    // Seed users
+    
     const users = await seedUsers(5);
 
     return res.status(200).json({
@@ -70,13 +70,13 @@ async function seedRestaurants(count: number) {
   const restaurantsToCreate = Array(count)
     .fill(0)
     .map(() => {
-      // Generate 2-4 random cuisines
+      
       const restaurantCuisines = faker.helpers.arrayElements(
         cuisines,
         faker.number.int({ min: 1, max: 3 })
       );
 
-      // Generate 6-15 menu items
+      
       const menuItemsCount = faker.number.int({ min: 6, max: 15 });
       const menuItems = Array(menuItemsCount)
         .fill(0)
@@ -91,7 +91,7 @@ async function seedRestaurants(count: number) {
             name: faker.commerce.productName(),
             description: faker.commerce.productDescription(),
             price,
-            image: "https://placehold.co/600x400/webp",
+            image: "https:
             category: faker.helpers.arrayElement([
               "Appetizers",
               "Main Course",
@@ -109,27 +109,27 @@ async function seedRestaurants(count: number) {
           };
         });
 
-      // Determine if this is a night restaurant (20% probability)
+      
       const isNightRestaurant = faker.datatype.boolean({ probability: 0.2 });
 
-      // Set opening hours based on restaurant type
+      
       let openHour, closeHour;
 
       if (isNightRestaurant) {
-        // Night restaurants: open in the evening, close in early morning
-        openHour = faker.number.int({ min: 17, max: 20 }); // 5 PM to 8 PM
-        closeHour = faker.number.int({ min: 2, max: 6 }); // 2 AM to 6 AM
+        
+        openHour = faker.number.int({ min: 17, max: 20 }); 
+        closeHour = faker.number.int({ min: 2, max: 6 }); 
       } else {
-        // Regular restaurants: open in the morning, close in the evening
-        openHour = faker.number.int({ min: 7, max: 11 }); // 7 AM to 11 AM
-        closeHour = faker.number.int({ min: 19, max: 23 }); // 7 PM to 11 PM
+        
+        openHour = faker.number.int({ min: 7, max: 11 }); 
+        closeHour = faker.number.int({ min: 19, max: 23 }); 
       }
 
-      // Format the hours correctly
+      
       const formattedOpenHour = openHour.toString().padStart(2, "0") + ":00";
       const formattedCloseHour = closeHour.toString().padStart(2, "0") + ":00";
 
-      // Determine which days of the week this restaurant is open
+      
       const daysOpen = Array.from({ length: 7 }, (_, i) => i).filter(() =>
         faker.datatype.boolean({ probability: 0.9 })
       );
@@ -159,13 +159,13 @@ async function seedRestaurants(count: number) {
           daysOpen: daysOpen.length > 0 ? daysOpen : [0, 1, 2, 3, 4, 5, 6],
         },
         isNightRestaurant: isNightRestaurant,
-        image: "https://placehold.co/600x400/webp",
+        image: "https:
         featured: faker.datatype.boolean({ probability: 0.3 }),
         manuallyClosed: faker.datatype.boolean({ probability: 0.2 }),
       };
     });
 
-  // Create all restaurants
+  
   return await Restaurant.insertMany(restaurantsToCreate);
 }
 
@@ -173,7 +173,7 @@ async function seedUsers(count: number) {
   const usersToCreate = Array(count)
     .fill(0)
     .map(() => {
-      // Create 1-3 addresses for each user
+      
       const addressesCount = faker.number.int({ min: 1, max: 3 });
       const addresses = Array(addressesCount)
         .fill(0)
@@ -182,19 +182,19 @@ async function seedUsers(count: number) {
           city: faker.location.city(),
           state: faker.location.state(),
           zipCode: faker.location.zipCode(),
-          isDefault: index === 0, // First address is default
+          isDefault: index === 0, 
         }));
 
       return {
         name: faker.person.fullName(),
         email: faker.internet.email().toLowerCase(),
-        // Bug: Password is set directly without hashing in seed function
+        
         password: faker.internet.password({ length: 12 }),
         addresses,
         phoneNumber: faker.phone.number(),
       };
     });
 
-  // Create all users
+  
   return await User.insertMany(usersToCreate);
 }

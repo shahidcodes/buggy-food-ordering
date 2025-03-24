@@ -11,11 +11,10 @@ const CartPage: NextPage = () => {
   const { items, removeItem, updateQuantity, clearCart, getTotalPrice } =
     useCartStore();
   const router = useRouter();
-  // Add state for calculated prices
+
   const [calculatedTotal, setCalculatedTotal] = useState(0);
   const [calculatedSubtotal, setCalculatedSubtotal] = useState(0);
 
-  // Calculate the prices using the store's buggy getTotalPrice method
   useEffect(() => {
     const subtotal = parseFloat(getTotalPrice().toFixed(2));
     const total = parseFloat((subtotal + 5).toFixed(2));
@@ -25,7 +24,6 @@ const CartPage: NextPage = () => {
   }, [items, getTotalPrice]);
 
   const handleQuantityChange = (id: string, newQuantity: number) => {
-    // Bug: Allow any quantity value including negative with no restrictions
     updateQuantity(id, newQuantity);
   };
 

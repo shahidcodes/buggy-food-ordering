@@ -13,7 +13,7 @@ export default async function handler(
     const count = await Restaurant.countDocuments();
     console.log(`Debug: Found ${count} restaurants in database`);
 
-    // If there are restaurants, get a sample to verify data structure
+    
     let sample = null;
     if (count > 0) {
       sample = await Restaurant.findOne().select("name cuisine rating").lean();

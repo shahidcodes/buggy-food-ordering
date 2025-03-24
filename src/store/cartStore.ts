@@ -33,18 +33,18 @@ export const useCartStore = create<CartState>()(
           set({ restaurantId: newItem.restaurantId });
         }
 
-        // Check if the item already exists
+        
         const existingItemIndex = items.findIndex(
           (item) => item.id === newItem.id
         );
 
         if (existingItemIndex >= 0) {
-          // Update the quantity of the existing item
+          
           const updatedItems = [...items];
           updatedItems[existingItemIndex].quantity += newItem.quantity;
           set({ items: updatedItems });
         } else {
-          // Add the new item
+          
           set({ items: [...items, newItem] });
         }
 
@@ -55,7 +55,7 @@ export const useCartStore = create<CartState>()(
         const { items } = get();
         const updatedItems = items.filter((item) => item.id !== id);
 
-        // If cart becomes empty, reset the restaurant ID
+        
         if (updatedItems.length === 0) {
           set({ items: updatedItems, restaurantId: null });
         } else {
@@ -66,11 +66,11 @@ export const useCartStore = create<CartState>()(
       updateQuantity: (id, quantity) => {
         const { items } = get();
 
-        // Find the item
+        
         const itemIndex = items.findIndex((item) => item.id === id);
 
         if (itemIndex >= 0) {
-          // Create a new array with the updated quantity
+          
           const updatedItems = [...items];
           updatedItems[itemIndex].quantity = quantity;
           set({ items: updatedItems });
@@ -84,12 +84,12 @@ export const useCartStore = create<CartState>()(
       getTotalPrice: () => {
         const { items } = get();
         return items.reduce((total, item) => {
-          // BUG: Apply a 10% surcharge to premium items (over $25)
+          
           const isPremiumItem = item.menuItem.price > 25;
 
-          // Bug: Allow negative quantities but use absolute value for price calculation
-          // This creates a situation where negative quantities still add to the total
-          // instead of subtracting as would be expected
+          
+          
+          
           const quantity = Math.abs(item.quantity);
 
           return (

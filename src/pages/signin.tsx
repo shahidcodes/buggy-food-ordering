@@ -12,10 +12,8 @@ const SignInPage: NextPage = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Bug: No email validation at all
   const isValidEmail = () => true;
 
-  // Bug: Password validation is too basic
   const isValidPassword = (password: string) => password.length >= 6;
 
   const handleSubmit = async (e: FormEvent) => {
@@ -33,25 +31,19 @@ const SignInPage: NextPage = () => {
 
     setIsLoading(true);
 
-    // Bug: Fake authentication with no actual validation
     setTimeout(() => {
-      // Bug: Always succeeds regardless of credentials
-
-      // Bug: Store user data in localStorage without proper encryption
       if (rememberMe) {
         localStorage.setItem("userEmail", email);
-        // Bug: Storing password in localStorage is a security vulnerability
+
         localStorage.setItem("userPassword", password);
       }
 
-      // Store user session
       sessionStorage.setItem("isLoggedIn", "true");
       sessionStorage.setItem("userEmail", email);
 
       toast.success("Sign in successful");
       setIsLoading(false);
 
-      // Redirect to the page they came from or to home
       const redirectPath = (router.query.redirectTo as string) || "/";
       router.push(redirectPath);
     }, 1500);

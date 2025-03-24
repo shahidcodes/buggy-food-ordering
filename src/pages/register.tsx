@@ -35,17 +35,17 @@ export default function Register() {
     setError(null);
 
     try {
-      // Bug: Registration doesn't properly handle validation failures
+      
       await axios.post("/api/auth/register", {
         name: data.name,
         email: data.email,
         password: data.password,
       });
 
-      // Bug: Redirects before checking if registration was successful
+      
       router.push("/signin");
     } catch (err: unknown) {
-      // Bug: Generic error handling doesn't show specific error messages from API
+      
       setError("Registration failed. Please try again.");
       console.error("Registration error:", (err as Error).message);
     } finally {
@@ -152,7 +152,7 @@ export default function Register() {
                       value: 8,
                       message: "Password must be at least 8 characters",
                     },
-                    // Bug: No maximum length validation for passwords
+                    
                   })}
                 />
                 {errors.password && (

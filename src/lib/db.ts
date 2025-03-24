@@ -1,23 +1,18 @@
 import mongoose from "mongoose";
 
-// Define the cached connection type
 interface MongooseConnection {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
 }
 
-// Extend global to include mongoose
 declare global {
   // eslint-disable-next-line no-var
   var mongoose: MongooseConnection | undefined;
 }
 
-// A deliberately flaky connection setup for QA testing
 const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/food-ordering-app";
+  process.env.MONGODB_URI || "mongodb://localhost:27017/buggy-food-ordering";
 
-// Bug 1: Connection doesn't properly handle reconnection after timeout
-// Bug 2: No proper error handling for authentication failures
 const cached: MongooseConnection = global.mongoose || {
   conn: null,
   promise: null,
@@ -32,7 +27,7 @@ async function connectDB() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: true,
-      // Bug 3: Short server selection timeout that might cause intermittent failures
+
       serverSelectionTimeoutMS:
         process.env.NODE_ENV === "production" ? 30000 : 3000,
     };
@@ -52,7 +47,7 @@ async function connectDB() {
       })
       .catch((error) => {
         console.error("MongoDB connection error details:", error);
-        // Bug 4: Even after error we still return a seemingly successful connection
+
         return mongoose;
       });
   }

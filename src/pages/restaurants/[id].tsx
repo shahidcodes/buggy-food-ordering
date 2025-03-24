@@ -10,7 +10,6 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
-// Define a simplified version of IRestaurant for safe type handling in the component
 interface RestaurantDetails {
   _id?: string;
   id?: string;
@@ -50,7 +49,6 @@ const RestaurantDetail: NextPage = () => {
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0);
 
   useEffect(() => {
-    // Fetch restaurant data
     const fetchRestaurant = async () => {
       if (!id) return;
 
@@ -71,7 +69,6 @@ const RestaurantDetail: NextPage = () => {
     fetchRestaurant();
   }, [id]);
 
-  // Simplified check for restaurant status using utility function
   useEffect(() => {
     if (!restaurant) return;
 
@@ -83,18 +80,15 @@ const RestaurantDetail: NextPage = () => {
       manuallyClosed: restaurant.manuallyClosed,
     });
 
-    // Use the utility function to determine if restaurant is open
     setIsRestaurantOpen(checkRestaurantOpen(restaurant));
   }, [restaurant]);
 
-  // Extract unique categories from menu items
   const categories = restaurant?.menu
     ? Array.from(
         new Set(restaurant.menu.map((item) => item.category).filter(Boolean))
       )
     : [];
 
-  // Helper to filter menu items by category
   const getMenuItemsByCategory = (category: string | null) => {
     if (!restaurant?.menu) return [];
 
@@ -102,7 +96,6 @@ const RestaurantDetail: NextPage = () => {
       return restaurant.menu;
     }
 
-    // Bug 3: Case-sensitive filter misses some items
     return restaurant.menu.filter(
       (item) => item.category.toLowerCase() === category.toLowerCase()
     );
@@ -114,13 +107,10 @@ const RestaurantDetail: NextPage = () => {
     (menuItem: MenuItem) => {
       if (!restaurant) return;
 
-      // Get the restaurant ID from either _id or id field
       const restaurantId = restaurant._id || restaurant.id || "";
 
-      // Create a unique ID for the cart item
       const cartItemId = `${restaurantId}-${menuItem.name}`;
 
-      // Try to add the item to cart
       addItem({
         id: cartItemId,
         restaurantId: restaurantId,
@@ -135,7 +125,6 @@ const RestaurantDetail: NextPage = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Floating Cart Button */}
       <div className="fixed bottom-8 right-8 z-50">
         <Link href="/cart" legacyBehavior>
           <a className="flex items-center justify-center w-16 h-16 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition-colors">
@@ -344,7 +333,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const { id } = context.params as { id: string };
 
-    // Fetch restaurant from API
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/api/restaurants/${id}`
     );
