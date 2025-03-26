@@ -1,9 +1,16 @@
+/*
+Changes:
+  -- email validation
+  -- password length validation from 8 to 12 characters
+*/
+
 import { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 import { toast } from "react-hot-toast";
+import Cookies from 'js-cookie'
 
 const SignInPage: NextPage = () => {
   const router = useRouter();
@@ -12,9 +19,14 @@ const SignInPage: NextPage = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const isValidEmail = () => true;
+  const isValidEmail = () => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
 
-  const isValidPassword = (password: string) => password.length >= 6;
+  const isValidPassword = (password: string) => {
+    return (password.length >= 8 && password.length <= 20);
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -40,6 +52,7 @@ const SignInPage: NextPage = () => {
 
       sessionStorage.setItem("isLoggedIn", "true");
       sessionStorage.setItem("userEmail", email);
+      Cookies.set('auth_token', 'fakeToken', { expires: 1 / 24, path: "/" }) // set cookie for 1 hour
 
       toast.success("Sign in successful");
       setIsLoading(false);
@@ -136,11 +149,10 @@ const SignInPage: NextPage = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
-                  isLoading
+                className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${isLoading
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                }`}
+                  }`}
               >
                 {isLoading ? (
                   <span className="flex items-center">

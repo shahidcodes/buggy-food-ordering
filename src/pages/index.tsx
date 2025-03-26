@@ -1,9 +1,20 @@
+/*
+-- added loading.tsx for global loader
+-- Installed js-cookie library to handle cookies in client side
+
+changes
+  -- added button to logout and hide the signin and register button if user is logged in
+  -- extracted the logout function stored in context and added to the logout button onClick event
+*/
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
 import { IRestaurant } from "@/models/Restaurant";
 import { isRestaurantOpen } from "@/utils/restaurantStatus";
+import { useAuth } from "@/hooks/useAuth";
+import Cookies from 'js-cookie'
 
 export default function Home() {
   const [restaurants, setRestaurants] = useState<Partial<IRestaurant>[]>([]);
@@ -14,6 +25,8 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const ITEMS_PER_PAGE = 9;
+
+  const { logout } = useAuth()
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -127,12 +140,19 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-900">Food Delivery</h1>
           <div className="flex space-x-4">
-            <Link href="/signin" className="text-blue-600 hover:underline">
-              Sign In
-            </Link>
-            <Link href="/register" className="text-blue-600 hover:underline">
-              Register
-            </Link>
+            {
+              !Cookies.get("auth_token") ?
+                <>
+                  <Link href="/signin" className="text-blue-600 hover:underline">
+                    Sign In
+                  </Link>
+                  <Link href="/register" className="text-blue-600 hover:underline">
+                    Register
+                  </Link>
+                </>
+                :
+                <button onClick={logout} className="px-4 py-2 rounded-md bg-red-500 hover:bg-red-600 text-white">Log Out</button>
+            }
           </div>
         </div>
       </header>
@@ -147,14 +167,14 @@ export default function Home() {
               <input
                 type="text"
                 placeholder="Search for restaurants..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <div>
               <select
-                className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full sm:w-auto px-4 py-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={cuisine}
                 onChange={(e) => setCuisine(e.target.value)}
               >
@@ -250,11 +270,10 @@ export default function Home() {
                     )}
 
                     <span
-                      className={`px-2 py-1 rounded-full text-xs text-white ${
-                        isRestaurantOpen(restaurant)
-                          ? "bg-green-500"
-                          : "bg-red-500"
-                      }`}
+                      className={`px-2 py-1 rounded-full text-xs text-white ${isRestaurantOpen(restaurant)
+                        ? "bg-green-500"
+                        : "bg-red-500"
+                        }`}
                     >
                       {isRestaurantOpen(restaurant) ? "Open" : "Closed"}
                     </span>
@@ -281,11 +300,10 @@ export default function Home() {
                       handlePageChange(Math.max(1, currentPage - 1))
                     }
                     disabled={currentPage === 1}
-                    className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium ${
-                      currentPage === 1
-                        ? "text-gray-300 cursor-not-allowed"
-                        : "text-gray-500 hover:bg-gray-50"
-                    }`}
+                    className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium ${currentPage === 1
+                      ? "text-gray-300 cursor-not-allowed"
+                      : "text-gray-500 hover:bg-gray-50"
+                      }`}
                   >
                     <span className="sr-only">Previous</span>
                     <svg
@@ -308,11 +326,10 @@ export default function Home() {
                       <button
                         key={`page-${page}`}
                         onClick={() => handlePageChange(page)}
-                        className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium ${
-                          currentPage === page
-                            ? "z-10 bg-blue-50 border-blue-500 text-blue-600"
-                            : "bg-white text-gray-500 hover:bg-gray-50"
-                        }`}
+                        className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium ${currentPage === page
+                          ? "z-10 bg-blue-50 border-blue-500 text-blue-600"
+                          : "bg-white text-gray-500 hover:bg-gray-50"
+                          }`}
                       >
                         {page}
                       </button>
@@ -331,11 +348,10 @@ export default function Home() {
                       handlePageChange(Math.min(totalPages, currentPage + 1))
                     }
                     disabled={currentPage === totalPages}
-                    className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${
-                      currentPage === totalPages
-                        ? "text-gray-300 cursor-not-allowed"
-                        : "text-gray-500 hover:bg-gray-50"
-                    }`}
+                    className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${currentPage === totalPages
+                      ? "text-gray-300 cursor-not-allowed"
+                      : "text-gray-500 hover:bg-gray-50"
+                      }`}
                   >
                     <span className="sr-only">Next</span>
                     <svg

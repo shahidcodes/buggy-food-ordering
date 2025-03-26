@@ -1,3 +1,9 @@
+/*
+Changes:
+  -- email validation
+  -- password length validation from 8 to 12 characters
+*/
+
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -35,17 +41,17 @@ export default function Register() {
     setError(null);
 
     try {
-      
+
       await axios.post("/api/auth/register", {
         name: data.name,
         email: data.email,
         password: data.password,
       });
 
-      
+
       router.push("/signin");
     } catch (err: unknown) {
-      
+
       setError("Registration failed. Please try again.");
       console.error("Registration error:", (err as Error).message);
     } finally {
@@ -91,7 +97,7 @@ export default function Register() {
                   id="name"
                   type="text"
                   autoComplete="name"
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   {...register("name", {
                     required: "Name is required",
                     maxLength: {
@@ -120,9 +126,13 @@ export default function Register() {
                   id="email"
                   type="email"
                   autoComplete="email"
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 border text-gray-900 border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   {...register("email", {
                     required: "Email is required",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                      message: "Invalid email address",
+                    },
                   })}
                 />
                 {errors.email && (
@@ -145,14 +155,17 @@ export default function Register() {
                   id="password"
                   type="password"
                   autoComplete="new-password"
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   {...register("password", {
                     required: "Password is required",
                     minLength: {
                       value: 8,
                       message: "Password must be at least 8 characters",
                     },
-                    
+                    maxLength: {
+                      value: 20,
+                      message: "Password cannot be more than 20 characters",
+                    }
                   })}
                 />
                 {errors.password && (
@@ -175,7 +188,7 @@ export default function Register() {
                   id="confirmPassword"
                   type="password"
                   autoComplete="new-password"
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   {...register("confirmPassword", {
                     required: "Please confirm your password",
                     validate: (value) =>
