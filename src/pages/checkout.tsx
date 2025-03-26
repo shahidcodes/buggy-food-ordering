@@ -141,7 +141,8 @@ const CheckoutPage: NextPage = () => {
                           id="card"
                           name="paymentMethod"
                           value="card"
-                          checked={paymentMethod === "card"}
+                          checked={paymentMethod 
+                            == "card"}
                           onChange={() => setPaymentMethod("card")}
                           className="h-4 w-4 text-red-600 focus:ring-red-500"
                         />
@@ -152,7 +153,8 @@ const CheckoutPage: NextPage = () => {
                     </div>
                   </div>
 
-                  {paymentMethod === "card" && (
+                  {paymentMethod 
+                  == "card" && (
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                       <div>
                         <label
@@ -168,7 +170,8 @@ const CheckoutPage: NextPage = () => {
                           {
                             ...register("name", {
                               required: "Required field",
-                              shouldUnregister: paymentMethod === "card"
+                              shouldUnregister: paymentMethod 
+                              == "card"
                             })
                           }
                           value={cardDetails.name}
@@ -194,7 +197,8 @@ const CheckoutPage: NextPage = () => {
                           {
                             ...register("number", {
                               required: "Required field",
-                              shouldUnregister: paymentMethod === "card"
+                              shouldUnregister: paymentMethod 
+                              == "card"
                             })
                           }
                           value={cardDetails.number}
@@ -221,7 +225,8 @@ const CheckoutPage: NextPage = () => {
                             {
                               ...register("expiry", {
                                 required: "Required field",
-                                shouldUnregister: paymentMethod === "card",
+                                shouldUnregister: paymentMethod 
+                                == "card",
                               })
                             }
                             value={cardDetails.expiry}
@@ -247,7 +252,8 @@ const CheckoutPage: NextPage = () => {
                             {
                               ...register("cvv", {
                                 required: "Required field",
-                                shouldUnregister: paymentMethod === "card"
+                                shouldUnregister: paymentMethod 
+                                == "card"
                               })
                             }
                             value={cardDetails.cvv}
