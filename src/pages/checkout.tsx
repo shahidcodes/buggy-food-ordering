@@ -4,6 +4,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
 const CheckoutPage: NextPage = () => {
@@ -13,6 +14,13 @@ const CheckoutPage: NextPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [calculatedTotal, setCalculatedTotal] = useState(0);
   const [calculatedSubtotal, setCalculatedSubtotal] = useState(0);
+
+  const {
+      register,
+      handleSubmit,
+      formState: { errors },
+      watch,
+    } = useForm<FormData>();
 
   
   const [cardDetails, setCardDetails] = useState({
@@ -37,8 +45,8 @@ const CheckoutPage: NextPage = () => {
     setCardDetails({ ...cardDetails, [name]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = (data: FormData) => {
+    // e.preventDefault();
 
     if (items.length === 0) {
       toast.error("Your cart is empty");
@@ -145,7 +153,7 @@ const CheckoutPage: NextPage = () => {
                   </div>
 
                   {paymentMethod === "card" && (
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                       <div>
                         <label
                           htmlFor="name"
@@ -157,12 +165,19 @@ const CheckoutPage: NextPage = () => {
                           type="text"
                           id="name"
                           name="name"
+                          {
+                            ...register("name", {
+                              required: "Required field",
+                              shouldUnregister: paymentMethod === "card"
+                            })
+                          }
                           value={cardDetails.name}
                           onChange={handleCardInputChange}
                           placeholder="John Doe"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-900 focus:ring-red-500 focus:border-red-500"
                           required
                         />
+                        {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name.mes}</p>}
                       </div>
 
                       <div>
@@ -176,12 +191,19 @@ const CheckoutPage: NextPage = () => {
                           type="text"
                           id="number"
                           name="number"
+                          {
+                            ...register("number", {
+                              required: "Required field",
+                              shouldUnregister: paymentMethod === "card"
+                            })
+                          }
                           value={cardDetails.number}
                           onChange={handleCardInputChange}
                           placeholder="1234 5678 9012 3456"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-900 focus:ring-red-500 focus:border-red-500"
                           required
                         />
+                        {errors.number && <p className="text-xs text-red-600 mt-1">{errors.number.mes}</p>}
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
@@ -196,12 +218,19 @@ const CheckoutPage: NextPage = () => {
                             type="text"
                             id="expiry"
                             name="expiry"
+                            {
+                              ...register("expiry", {
+                                required: "Required field",
+                                shouldUnregister: paymentMethod === "card",
+                              })
+                            }
                             value={cardDetails.expiry}
                             onChange={handleCardInputChange}
                             placeholder="MM/YY"
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-900 focus:ring-red-500 focus:border-red-500"
                             required
                           />
+                          {errors.expiry && <p className="text-xs text-red-600 mt-1">{errors.expiry.mes}</p>}
                         </div>
 
                         <div>
@@ -215,12 +244,19 @@ const CheckoutPage: NextPage = () => {
                             type="text"
                             id="cvv"
                             name="cvv"
+                            {
+                              ...register("cvv", {
+                                required: "Required field",
+                                shouldUnregister: paymentMethod === "card"
+                              })
+                            }
                             value={cardDetails.cvv}
                             onChange={handleCardInputChange}
                             placeholder="123"
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-900 focus:ring-red-500 focus:border-red-500"
                             required
                           />
+                          {errors.cvv && <p className="text-xs text-red-600 mt-1">{errors.cvv.mes}</p>}
                         </div>
                       </div>
                     </form>
@@ -245,7 +281,7 @@ const CheckoutPage: NextPage = () => {
                         id="address"
                         name="address"
                         placeholder="123 Main St"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-900 focus:ring-red-500 focus:border-red-500"
                         required
                       />
                     </div>
@@ -263,7 +299,7 @@ const CheckoutPage: NextPage = () => {
                           id="city"
                           name="city"
                           placeholder="New York"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-900 focus:ring-red-500 focus:border-red-500"
                           required
                         />
                       </div>
@@ -280,7 +316,7 @@ const CheckoutPage: NextPage = () => {
                           id="zipCode"
                           name="zipCode"
                           placeholder="10001"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-900 focus:ring-red-500 focus:border-red-500"
                           required
                         />
                       </div>
@@ -298,7 +334,7 @@ const CheckoutPage: NextPage = () => {
                         id="phone"
                         name="phone"
                         placeholder="(123) 456-7890"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-900 focus:ring-red-500 focus:border-red-500"
                         required
                       />
                     </div>
@@ -349,7 +385,7 @@ const CheckoutPage: NextPage = () => {
                   </div>
 
                   <button
-                    onClick={handleSubmit}
+                    onClick={handleSubmit(onSubmit)}
                     disabled={isProcessing}
                     className={`mt-6 w-full py-3 px-4 rounded-md font-medium text-white focus:outline-none focus:ring-2 focus:ring-red-500 ${
                       isProcessing

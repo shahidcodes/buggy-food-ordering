@@ -1,3 +1,10 @@
+/**
+ * Changes:
+ * -- validation of another restaurant's items
+ * -- alert for restaurant closed
+ * -- add button disable if item is not available
+*/
+
 import connectDB from "@/lib/db";
 import { MenuItem } from "@/models/Restaurant";
 import { useCartStore } from "@/store/cartStore";
@@ -85,8 +92,8 @@ const RestaurantDetail: NextPage = () => {
 
   const categories = restaurant?.menu
     ? Array.from(
-        new Set(restaurant.menu.map((item) => item.category).filter(Boolean))
-      )
+      new Set(restaurant.menu.map((item) => item.category).filter(Boolean))
+    )
     : [];
 
   const getMenuItemsByCategory = (category: string | null) => {
@@ -105,6 +112,15 @@ const RestaurantDetail: NextPage = () => {
 
   const addItemToCart = useCallback(
     (menuItem: MenuItem) => {
+
+      if (!isRestaurantOpen) {
+        alert("Restaurant is closed");
+      }
+
+      if (items?.length > 0 && items[0].restaurantId !== restaurant._id) {
+        alert("You can only order from one restaurant at a time")
+      }
+
       if (!restaurant) return;
 
       const restaurantId = restaurant._id || restaurant.id || "";
@@ -181,9 +197,8 @@ const RestaurantDetail: NextPage = () => {
                   </div>
                   <div className="flex items-center">
                     <span
-                      className={`inline-block w-3 h-3 rounded-full mr-2 ${
-                        isRestaurantOpen ? "bg-green-500" : "bg-red-500"
-                      }`}
+                      className={`inline-block w-3 h-3 rounded-full mr-2 ${isRestaurantOpen ? "bg-green-500" : "bg-red-500"
+                        }`}
                     ></span>
                     <span>
                       {isRestaurantOpen
@@ -240,11 +255,10 @@ const RestaurantDetail: NextPage = () => {
                   <div className="flex space-x-2">
                     <button
                       onClick={() => setSelectedCategory(null)}
-                      className={`px-4 py-2 rounded-full whitespace-nowrap ${
-                        selectedCategory === null
+                      className={`px-4 py-2 rounded-full whitespace-nowrap ${selectedCategory === null
                           ? "bg-primary text-white"
                           : "bg-gray-200 text-gray-800"
-                      }`}
+                        }`}
                     >
                       All
                     </button>
@@ -252,11 +266,10 @@ const RestaurantDetail: NextPage = () => {
                       <button
                         key={category}
                         onClick={() => setSelectedCategory(category)}
-                        className={`px-4 py-2 rounded-full whitespace-nowrap ${
-                          selectedCategory === category
+                        className={`px-4 py-2 rounded-full whitespace-nowrap ${selectedCategory === category
                             ? "bg-primary text-white"
                             : "bg-gray-200 text-gray-800"
-                        }`}
+                          }`}
                       >
                         {category}
                       </button>
@@ -283,8 +296,9 @@ const RestaurantDetail: NextPage = () => {
                               ${item.price.toFixed(2)}
                             </span>
                             <button
+                              disabled={!item?.available}
                               onClick={() => addItemToCart(item)}
-                              className="px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white font-bold"
+                              className="px-3 py-1 rounded disabled:bg-red-400 bg-red-600 hover:bg-red-700 text-white font-bold"
                             >
                               Add to Cart
                             </button>

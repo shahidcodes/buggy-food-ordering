@@ -43,7 +43,7 @@ export default function Home() {
           params: {
             ...(cuisine && { cuisine }),
             ...(searchQuery && { search: searchQuery }),
-            page: currentPage - 1,
+            page: currentPage,
             limit: ITEMS_PER_PAGE,
           },
         });
@@ -241,7 +241,7 @@ export default function Home() {
                   </div>
                   <div className="p-4">
                     <div className="flex justify-between items-start">
-                      <h2 className="text-lg font-semibold">
+                      <h2 className="text-lg font-semibold text-gray-900">
                         {restaurant.name}
                       </h2>
                       <div className="flex items-center">

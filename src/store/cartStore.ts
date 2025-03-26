@@ -1,3 +1,7 @@
+/**
+ * Changes:
+ * -- removed isPremiumItem logic
+ */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { MenuItem } from "@/models/Restaurant";
@@ -85,7 +89,7 @@ export const useCartStore = create<CartState>()(
         const { items } = get();
         return items.reduce((total, item) => {
           
-          const isPremiumItem = item.menuItem.price > 25;
+          // const isPremiumItem = item.menuItem.price > 25;
 
           
           
@@ -93,7 +97,8 @@ export const useCartStore = create<CartState>()(
           const quantity = Math.abs(item.quantity);
 
           return (
-            total + item.menuItem.price * (isPremiumItem ? 1.1 : 1) * quantity
+            // total + item.menuItem.price * (isPremiumItem ? 1.1 : 1) * quantity
+            total + item.menuItem.price * quantity
           );
         }, 0);
       },
