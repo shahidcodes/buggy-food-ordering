@@ -6,8 +6,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 const CartPage: NextPage = () => {
+  const { user } = useAuth()
+
   const { items, removeItem, updateQuantity, clearCart, getTotalPrice } =
     useCartStore();
   const router = useRouter();
@@ -24,6 +27,10 @@ const CartPage: NextPage = () => {
   }, [items, getTotalPrice]);
 
   const handleQuantityChange = (id: string, newQuantity: number) => {
+    if (newQuantity < 1) {
+      removeItem(id);
+      return;
+    }
     updateQuantity(id, newQuantity);
   };
 
@@ -181,6 +188,7 @@ const CartPage: NextPage = () => {
                     </div>
                   </div>
                   <button
+                    disabled={!user}
                     onClick={proceedToCheckout}
                     className="mt-6 w-full bg-red-600 text-white py-3 px-4 rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 font-medium"
                   >

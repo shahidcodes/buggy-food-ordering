@@ -28,7 +28,7 @@ export default async function handler(
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
       
-      const skip = (page - 1) * limit;
+      const skip = Math.max(0, (page - 1) * limit);
       console.log("API: Pagination:", { page, limit, skip });
 
       

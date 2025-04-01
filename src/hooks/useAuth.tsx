@@ -1,3 +1,10 @@
+/*
+Changes:
+  -- Changed the token storage from localStorage to Cookies with 1 hour of expiration
+  -- Added a new function to clear the token when the user logs out
+  -- Added Toast on logout
+*/
+
 import {
   createContext,
   useContext,
@@ -7,6 +14,8 @@ import {
 } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
+import Cookies from 'js-cookie'
 
 interface User {
   _id: string;
@@ -29,6 +38,7 @@ interface AuthContextType {
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   clearError: () => void;
+  saveUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -44,7 +54,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const checkUser = async () => {
       try {
         
-        const token = localStorage.getItem("auth_token");
+        // const token = localstorage.getItem("auth_token");
+        const token = Cookies.get("auth_token");
 
         if (token) {
           
@@ -66,6 +77,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkUser();
   }, []);
 
+  const saveUser = (user: User) => {
+    setUser(user);
+  }  
+
   const login = async (email: string, password: string) => {
     setLoading(true);
     setError(null);
@@ -74,7 +89,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await axios.post("/api/auth/login", { email, password });
 
       
-      localStorage.setItem("auth_token", response.data.token);
+      // localStorage.setItem("auth_token", response.data.token);
+      Cookies.set('auth_token', 'fakeToken', { expires: 1 / 24, path: "/" }) // set cookie for 1 hour
 
       setUser(response.data.user);
       router.push("/");
@@ -114,9 +130,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     
-    localStorage.removeItem("auth_token");
+    // localStorage.removeItem("auth_token");
+    Cookies.remove('auth_token')
     setUser(null);
     router.push("/signin");
+    toast.success("Logged out successfully");
   };
 
   const clearError = () => {
@@ -133,6 +151,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         register,
         logout,
         clearError,
+        saveUser
       }}
     >
       {children}

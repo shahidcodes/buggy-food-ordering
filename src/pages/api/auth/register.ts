@@ -32,6 +32,18 @@ export default async function handler(
         .json({ message: "Password must be at least 8 characters long" });
     }
 
+    if (password.length > 30) {
+      return res
+        .status(400)
+        .json({ message: "Password too long!! must be at max 30 characters long" });
+    }
+    
+    const existingUser = await User.findOne({ email: email.toLowerCase() })
+    
+    if(existingUser) {
+      return res.status(400).json({ message: "Email already registered" });
+    }
+
     const user = await User.create({
       name,
       email: email.toLowerCase(),
