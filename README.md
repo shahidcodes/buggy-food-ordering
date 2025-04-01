@@ -1,5 +1,11 @@
 # Food Ordering Application
 
+# Submission
+
+- You're required to fork the repo and submit a pull request for your changes
+- Make sure you write the commit message properly
+- Make sure to do one commit per issue, do not commit several issues together.
+
 ## Project Structure
 
 ```
