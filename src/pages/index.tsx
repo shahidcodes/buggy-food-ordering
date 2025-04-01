@@ -4,6 +4,7 @@ import Image from "next/image";
 import axios from "axios";
 import { IRestaurant } from "@/models/Restaurant";
 import { isRestaurantOpen } from "@/utils/restaurantStatus";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Home() {
   const [restaurants, setRestaurants] = useState<Partial<IRestaurant>[]>([]);
@@ -14,6 +15,7 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const ITEMS_PER_PAGE = 9;
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -127,6 +129,12 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-900">Food Delivery</h1>
           <div className="flex space-x-4">
+            <Link
+              href="/admin/login"
+              className="text-indigo-600 hover:underline font-medium"
+            >
+              Admin
+            </Link>
             <Link href="/signin" className="text-blue-600 hover:underline">
               Sign In
             </Link>

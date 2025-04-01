@@ -63,17 +63,14 @@ const RestaurantSchema: Schema = new Schema(
       min: 0,
       max: 5,
       default: 0,
-      
     },
     deliveryTime: {
       type: Number,
       required: true,
-      
     },
     deliveryFee: {
       type: Number,
       required: true,
-      
     },
     minOrderAmount: {
       type: Number,
@@ -89,14 +86,12 @@ const RestaurantSchema: Schema = new Schema(
         popular: { type: Boolean, default: false },
         available: { type: Boolean, default: true },
         allergens: { type: [String] },
-        
       },
     ],
     openingHours: {
       open: { type: String, required: true },
       close: { type: String, required: true },
-      daysOpen: { type: [Number], required: true }, 
-      
+      daysOpen: { type: [Number], required: true },
     },
     image: {
       type: String,
@@ -104,7 +99,6 @@ const RestaurantSchema: Schema = new Schema(
     featured: {
       type: Boolean,
       default: false,
-      
     },
   },
   {
